@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    environment:
+      - PORT=${PORT:-4173}
+    ports:
+      - "${APP_PORT:-4173}:${PORT:-4173}"
