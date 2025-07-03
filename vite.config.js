@@ -209,14 +209,18 @@ export default defineConfig({
 			'@': path.resolve(__dirname, './src'),
 		},
 	},
-	build: {
-		rollupOptions: {
-			external: [
-				'@babel/parser',
-				'@babel/traverse',
-				'@babel/generator',
-				'@babel/types'
-			]
-		}
-	}
+        build: {
+                rollupOptions: {
+                        external: [
+                                '@babel/parser',
+                                '@babel/traverse',
+                                '@babel/generator',
+                                '@babel/types'
+                        ]
+                }
+        },
+        test: {
+                globals: true,
+                environment: 'node'
+        }
 });
