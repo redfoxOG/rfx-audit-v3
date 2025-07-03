@@ -59,28 +59,52 @@ The preview server runs on port `4173` by default.
 
 ## Docker Usage
 
-You can containerize the app using Docker. Below is a basic example `Dockerfile`:
+The repository includes a `Dockerfile` and `docker-compose.yml` for building and
+running the container.
+
+### Dockerfile
 
 ```dockerfile
-# Build stage
-FROM node:18 AS build
+# Stage 1: build the app
+FROM node:18-alpine AS build
 WORKDIR /app
+COPY package*.json ./
+RUN npm ci
 COPY . .
-RUN npm ci && npm run build
+RUN npm run build
 
-# Serve the built app
-FROM node:18-slim
+# Stage 2: serve the built files
+FROM node:18-alpine
 WORKDIR /app
 COPY --from=build /app/dist ./dist
 RUN npm install -g serve
-EXPOSE 4173
-CMD ["serve", "-s", "dist", "-l", "4173"]
+ENV PORT 4173
+EXPOSE $PORT
+CMD ["sh", "-c", "serve -s dist -l $PORT"]
 ```
 
-Build and run the container locally:
+### Building the Image
 
 ```bash
 docker build -t rfx-audit .
+```
+
+### Running with Docker Compose
+
+By default the application listens on port `4173`. The exposed host port can be
+changed with the `APP_PORT` environment variable:
+
+```bash
+# uses port 4173 by default
+docker compose up -d
+
+# override the host port
+APP_PORT=8080 docker compose up -d
+```
+
+### Manual Docker Run
+
+```bash
 docker run -p 4173:4173 rfx-audit
 ```
 
