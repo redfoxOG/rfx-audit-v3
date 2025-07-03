@@ -1,0 +1,152 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 0%; /* Black */
+  --foreground: 0 0% 80%; /* Light Grey */
+  
+  --card: 240 5% 11%; /* Dark Grey */
+  --card-foreground: 0 0% 95%;
+
+  --popover: 240 5% 8%;
+  --popover-foreground: 0 0% 95%;
+
+  --primary: 348 83% 47%; /* Crimson Red */
+  --primary-foreground: 0 0% 98%;
+
+  --secondary: 240 4% 16%;
+  --secondary-foreground: 0 0% 98%;
+
+  --muted: 240 4% 16%;
+  --muted-foreground: 0 0% 63%;
+
+  --accent: 348 93% 57%; /* Brighter Crimson/Neon Red */
+  --accent-foreground: 0 0% 98%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 348 83% 47%; /* Crimson for borders */
+  --input: 348 83% 47%; /* Crimson for input borders */
+  --ring: 348 93% 57%; /* Neon Red for rings */
+
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 0 0% 3%; /* Near Black */
+  --foreground: 0 0% 80%;
+  
+  --dark-gray: 240 5% 8%;
+  --crimson: 348 83% 47%;
+  --neon-red: 348 93% 57%;
+  --neon-green: 148 83% 47%;
+
+  --card: var(--dark-gray);
+  --card-foreground: 0 0% 95%;
+
+  --popover: 240 5% 5%;
+  --popover-foreground: 0 0% 95%;
+
+  --primary: var(--crimson);
+  --primary-foreground: 0 0% 98%;
+
+  --secondary: 240 4% 12%;
+  --secondary-foreground: 0 0% 98%;
+
+  --muted: 240 4% 12%;
+  --muted-foreground: 0 0% 63%;
+
+  --accent: var(--neon-red);
+  --accent-foreground: 0 0% 98%;
+
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: var(--neon-red);
+  --input: var(--neon-red);
+  --ring: var(--neon-red);
+}
+
+@layer base {
+  * {
+    @apply border-border/20;
+  }
+  body {
+    @apply bg-black text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  .font-orbitron {
+    font-family: 'Orbitron', sans-serif;
+  }
+  .font-fira-code {
+    font-family: 'Fira Code', monospace;
+  }
+}
+
+@layer utilities {
+  .scanline-overlay {
+    @apply pointer-events-none fixed inset-0 z-[100] mix-blend-overlay;
+    background: repeating-linear-gradient(
+      transparent,
+      transparent 2px,
+      rgba(255, 0, 0, 0.05) 3px,
+      rgba(255, 0, 0, 0.05) 3px
+    );
+    animation: scanline 20s linear infinite;
+  }
+
+  @keyframes scanline {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100vh; }
+  }
+
+  .glitch-text {
+    position: relative;
+    color: #fff;
+    animation: glitch-skew 1s infinite linear alternate-reverse;
+  }
+  .glitch-text::before,
+  .glitch-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    overflow: hidden;
+  }
+  .glitch-text::before {
+    left: 2px;
+    text-shadow: -2px 0 hsl(var(--neon-red));
+    animation: glitch-anim-1 2s infinite linear alternate-reverse;
+  }
+  .glitch-text::after {
+    left: -2px;
+    text-shadow: -2px 0 hsl(var(--neon-green)), 2px 2px hsl(var(--neon-red));
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+  }
+
+  @keyframes glitch-anim-1 { 0%, 100% { clip-path: inset(45% 0 50% 0); } 25% { clip-path: inset(0 0 0 0); } 50% { clip-path: inset(80% 0 15% 0); } 75% { clip-path: inset(50% 0 45% 0); } }
+  @keyframes glitch-anim-2 { 0%, 100% { clip-path: inset(80% 0 15% 0); } 25% { clip-path: inset(50% 0 45% 0); } 50% { clip-path: inset(0 0 0 0); } 75% { clip-path: inset(45% 0 50% 0); } }
+  @keyframes glitch-skew { 0% { transform: skew(0deg); } 5% { transform: skew(1deg); } 10% { transform: skew(-0.5deg); } 15%, 100% { transform: skew(0deg); } }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.5);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
