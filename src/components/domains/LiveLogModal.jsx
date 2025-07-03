@@ -2,51 +2,50 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Terminal } from 'lucide-react';
-
-const mockLogLines = [
-  "Initializing Dockerized scanner...",
-  "Container created: rfx-nmap-8a4fde",
-  "Pulling latest Nmap image...",
-  "Image pull complete.",
-  "Starting Nmap against target...",
-  "Nmap scan report for target",
-  "Host is up (0.021s latency).",
-  "Not shown: 995 closed tcp ports (conn-refused)",
-  "PORT      STATE SERVICE",
-  "22/tcp    open  ssh",
-  "80/tcp    open  http",
-  "443/tcp   open  https",
-  "3306/tcp  open  mysql",
-  "8080/tcp  open  http-proxy",
-  "Vulnerability scan starting...",
-  "Checking for CVE-2021-44228 (Log4Shell)...",
-  "Target appears not vulnerable.",
-  "Extracting structured results...",
-  "Scan complete. Terminating container.",
-  "Results sent to Supabase.",
-];
+import { supabase } from '@/lib/customSupabaseClient';
 
 const LiveLogModal = ({ isOpen, onOpenChange, domain }) => {
   const [logs, setLogs] = useState([]);
   const logContainerRef = useRef(null);
 
   useEffect(() => {
-    if (isOpen) {
-      setLogs([]);
-      let lineIndex = 0;
-      const intervalId = setInterval(() => {
-        if (lineIndex < mockLogLines.length) {
-          setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${mockLogLines[lineIndex]}`]);
-          lineIndex++;
-        } else {
-          clearInterval(intervalId);
-          setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] --- STREAM END ---`]);
-        }
-      }, Math.random() * 800 + 200);
+    if (!isOpen || !domain) return;
 
-      return () => clearInterval(intervalId);
-    }
-  }, [isOpen]);
+    setLogs([]);
+
+    const fetchInitialLogs = async () => {
+      const { data, error } = await supabase
+        .from('logs')
+        .select('message, inserted_at')
+        .eq('domain_id', domain.id)
+        .order('inserted_at', { ascending: true });
+
+      if (!error && data) {
+        const formatted = data.map(row => `[${new Date(row.inserted_at).toLocaleTimeString()}] ${row.message}`);
+        setLogs(formatted);
+      }
+    };
+
+    fetchInitialLogs();
+
+    const channel = supabase.channel(`public:logs:domain_${domain.id}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'logs', filter: `domain_id=eq.${domain.id}` },
+        payload => {
+          const msg = payload.new?.message;
+          const time = payload.new?.inserted_at || new Date().toISOString();
+          if (msg) {
+            setLogs(prev => [...prev, `[${new Date(time).toLocaleTimeString()}] ${msg}`]);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isOpen, domain]);
 
   useEffect(() => {
     if (logContainerRef.current) {
