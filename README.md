@@ -99,6 +99,26 @@ A typical deployment workflow is:
 2. Push the image to your registry.
 3. Use Portainer or another orchestrator (Docker Compose, Kubernetes) to run the container in production.
 
+## Supabase Edge Function Deployment
+
+This repo contains a sample function under `functions/n8n-proxy` that forwards
+requests to an n8n webhook.
+
+1. Install the [Supabase CLI](https://supabase.com/docs/guides/cli).
+2. Authenticate with `supabase login` and ensure your project is initialized.
+3. Deploy the function:
+
+   ```bash
+   supabase functions deploy n8n-proxy
+   supabase secrets set N8N_WEBHOOK_URL=<your-n8n-url>
+   ```
+
+After deployment you can invoke it from the client:
+
+```javascript
+const { data, error } = await supabase.functions.invoke('n8n-proxy')
+```
+
 ---
 
 For additional customization (like scanning engines or API key management), see the Settings page inside the application.
