@@ -146,3 +146,8 @@ const { data, error } = await supabase.functions.invoke('n8n-proxy')
 ---
 
 For additional customization (like scanning engines or API key management), see the Settings page inside the application.
+
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
