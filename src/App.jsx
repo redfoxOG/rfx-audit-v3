@@ -17,7 +17,7 @@ import PremiumCancelPage from '@/pages/PremiumCancelPage';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 
-const STRIPE_PUBLISHABLE_KEY = "pk_test_51Rgdk6CiatFVYXDzOHrSEdPadEIP5z0fNNOQMNYwotUidKnl8uMwPSTVtadcP62PMqcbmeWaNoRECwoGZ6QggIPN00bwtLhz6U";
+const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
 function App() {
