@@ -10,7 +10,7 @@ import DomainList from '@/components/domains/DomainList';
 import DomainDialog from '@/components/domains/DomainDialog';
 import LiveLogModal from '@/components/domains/LiveLogModal';
 import { Helmet } from 'react-helmet-async';
-import { supabase } from '@/lib/customSupabaseClient';
+import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 
 const n8nWebhookUrl = '/functions/v1/n8n-proxy';

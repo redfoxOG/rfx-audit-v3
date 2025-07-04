@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { AlertTriangle, CheckCircle, ListChecks, ExternalLink, ArrowLeft, Download, Code, Activity, ChevronDown } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { Helmet } from 'react-helmet-async';
-import { supabase } from '@/lib/customSupabaseClient';
+import { supabase } from '@/lib/supabaseClient';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 
 const AuditReportPage = () => {

@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
-import { supabase } from '@/lib/customSupabaseClient';
+import { supabase } from '@/lib/supabaseClient';
 import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,7 +23,7 @@ const BillingSettings = () => {
 
     const { data, error } = await supabase.functions.invoke('create-portal-link');
 
-    if (error) {
+    if (error || !data?.url) {
         toast({
             title: 'Error',
             description: 'Could not create billing portal session. Please try again.',
@@ -32,7 +32,7 @@ const BillingSettings = () => {
         setLoading(false);
         return;
     }
-    
+
     window.location.href = data.url;
   };
   
