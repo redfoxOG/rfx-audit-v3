@@ -25,7 +25,7 @@ const DomainsPage = () => {
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
   const [loggingDomain, setLoggingDomain] = useState(null);
   const { toast } = useToast();
-  const { user, profile, isPremium } = useAuth();
+  const { user, isPremium } = useAuth();
 
   const fetchDomains = useCallback(async () => {
     if (!user) return;
@@ -108,8 +108,6 @@ const DomainsPage = () => {
     const domainToAudit = domains.find(d => d.id === domainId);
     if (!domainToAudit || !user) return;
 
-
-    const isPremium = profile?.subscription_status === 'active';
 
     const hasAdvancedScans = Object.values(domainToAudit.scan_types?.advanced || {}).some(v => v);
 
