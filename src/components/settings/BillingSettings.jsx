@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 const BillingSettings = () => {
   const { toast } = useToast();
-  const { profile } = useAuth();
+  const { profile, isPremium } = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -36,8 +36,6 @@ const BillingSettings = () => {
     window.location.href = data.url;
   };
   
-  const isPremium = profile?.subscription_status === 'active';
-
   return (
     <Card>
       <CardHeader>

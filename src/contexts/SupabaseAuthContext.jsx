@@ -11,12 +11,33 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState(null);
+  const [isPremium, setIsPremium] = useState(false);
 
   const handleSession = useCallback(async (session) => {
     setSession(session);
     setUser(session?.user ?? null);
     setLoading(false);
   }, []);
+
+  const fetchProfile = useCallback(async () => {
+    if (!user) {
+      setProfile(null);
+      setIsPremium(false);
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (!error) {
+      setProfile(data);
+      setIsPremium(data?.subscription_status === 'active');
+    }
+  }, [user]);
 
   useEffect(() => {
     const getSession = async () => {
@@ -34,6 +55,10 @@ export const AuthProvider = ({ children }) => {
 
     return () => subscription.unsubscribe();
   }, [handleSession]);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [session, fetchProfile]);
 
   const signUp = useCallback(async (email, password) => {
     const { error } = await supabase.auth.signUp({
@@ -87,10 +112,13 @@ export const AuthProvider = ({ children }) => {
     user,
     session,
     loading,
+    profile,
+    isPremium,
+    refetchProfile: fetchProfile,
     signUp,
     signIn,
     signOut,
-  }), [user, session, loading, signUp, signIn, signOut]);
+  }), [user, session, loading, profile, isPremium, signUp, signIn, signOut, fetchProfile]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
