@@ -5,12 +5,14 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/lib/customSupabaseClient';
+import { SUBSCRIPTION_ACTIVE } from '@/lib/constants';
 import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const BillingSettings = () => {
   const { toast } = useToast();
-  const { profile, isPremium } = useAuth();
+  const { profile } = useAuth();
+  const hasActiveSubscription = profile?.subscription_status === SUBSCRIPTION_ACTIVE;
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -44,9 +46,9 @@ const BillingSettings = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <p className="font-fira-code">Current Plan: <span className="font-bold text-crimson">{isPremium ? 'Spectre (Premium)' : 'Agent (Free)'}</span></p>
+          <p className="font-fira-code">Current Plan: <span className="font-bold text-crimson">{hasActiveSubscription ? 'Spectre (Premium)' : 'Agent (Free)'}</span></p>
         </div>
-        {isPremium ? (
+        {hasActiveSubscription ? (
           <Button onClick={handleManageBilling} disabled={loading}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Manage Billing & Subscription

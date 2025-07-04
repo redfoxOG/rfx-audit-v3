@@ -7,6 +7,7 @@ import { Check, Star, Loader2 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useStripe } from '@stripe/react-stripe-js';
+import { SUBSCRIPTION_ACTIVE } from '@/lib/constants';
 
 const plans = [
   {
@@ -36,7 +37,7 @@ const plans = [
       'Webhook & n8n Integration',
       'Priority Email Support',
     ],
-    isCurrent: (profile) => profile?.subscription_status === 'active',
+    isCurrent: (profile) => profile?.subscription_status === SUBSCRIPTION_ACTIVE,
     isPremium: true,
     cta: 'Upgrade to Spectre',
   },

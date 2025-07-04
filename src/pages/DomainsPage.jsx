@@ -11,6 +11,7 @@ import DomainDialog from '@/components/domains/DomainDialog';
 import LiveLogModal from '@/components/domains/LiveLogModal';
 import { Helmet } from 'react-helmet-async';
 import { supabase } from '@/lib/customSupabaseClient';
+import { SUBSCRIPTION_ACTIVE } from '@/lib/constants';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 
 const n8nWebhookUrl = '/functions/v1/n8n-proxy';
@@ -109,12 +110,12 @@ const DomainsPage = () => {
     if (!domainToAudit || !user) return;
 
 
-    const isPremium = profile?.subscription_status === 'active';
+    const hasActiveSubscription = profile?.subscription_status === SUBSCRIPTION_ACTIVE;
 
     const hasAdvancedScans = Object.values(domainToAudit.scan_types?.advanced || {}).some(v => v);
 
     if (hasAdvancedScans) {
-      if (!isPremium) {
+      if (!hasActiveSubscription) {
         toast({
           title: 'Premium Feature Locked',
           description: 'Advanced scans require a premium subscription. Please upgrade your plan.',
