@@ -1,16 +1,13 @@
-# Build stage
-FROM node:18-alpine AS build
+FROM node:20-alpine as builder
+
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci
 COPY . .
+
+# safer for first-time builds if lockfile is missing or broken
+RUN npm install
 RUN npm run build
 
-# Runtime stage
-FROM node:18-alpine
-WORKDIR /app
-COPY --from=build /app/dist ./dist
-RUN npm install -g serve
-ENV PORT 4173
-EXPOSE $PORT
-CMD ["sh", "-c", "serve -s dist -l $PORT"]
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
