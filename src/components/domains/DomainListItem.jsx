@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Play, Eye, Edit, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
-import { supabase } from '@/lib/customSupabaseClient';
+import { supabase } from '@/lib/supabaseClient';
 
 const DomainListItem = ({ domain, onEdit, onDelete, onRunAudit }) => {
   const navigate = useNavigate();

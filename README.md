@@ -25,6 +25,13 @@ VITE_STRIPE_PUBLISHABLE_KEY=<your-stripe-publishable-key>
 
 These variables are loaded via Vite and used by the Supabase client and Stripe integration.
 
+Supabase edge functions require additional secrets set via the CLI:
+
+```bash
+supabase secrets set N8N_WEBHOOK_URL=<your-n8n-url>
+supabase secrets set BILLING_PORTAL_URL=<your-stripe-portal-url>
+```
+
 ## Local Development
 
 Run a development server with hot reloading:
@@ -141,6 +148,21 @@ After deployment you can invoke it from the client:
 
 ```javascript
 const { data, error } = await supabase.functions.invoke('n8n-proxy')
+```
+
+### Billing portal function
+
+To let users manage their subscriptions, deploy the `create-portal-link` edge function:
+
+```bash
+supabase functions deploy create-portal-link
+supabase secrets set BILLING_PORTAL_URL=<your-stripe-portal-url>
+```
+
+Invoke it from the client to obtain the redirect URL:
+
+```javascript
+const { data, error } = await supabase.functions.invoke('create-portal-link');
 ```
 
 ---
