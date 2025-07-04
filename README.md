@@ -130,17 +130,28 @@ requests to an n8n webhook.
 
 1. Install the [Supabase CLI](https://supabase.com/docs/guides/cli).
 2. Authenticate with `supabase login` and ensure your project is initialized.
-3. Deploy the function:
+3. Deploy the functions:
 
    ```bash
    supabase functions deploy n8n-proxy
    supabase secrets set N8N_WEBHOOK_URL=<your-n8n-url>
+   supabase functions deploy create-portal-link
+   supabase secrets set \
+     STRIPE_SECRET_KEY=<your-stripe-secret> \
+     SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key> \
+     SITE_URL=<your-site-url>
    ```
 
 After deployment you can invoke it from the client:
 
 ```javascript
 const { data, error } = await supabase.functions.invoke('n8n-proxy')
+```
+
+To open the Stripe billing portal from the client:
+
+```javascript
+const { data, error } = await supabase.functions.invoke('create-portal-link')
 ```
 
 ---

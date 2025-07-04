@@ -17,23 +17,26 @@ const BillingSettings = () => {
   const handleManageBilling = async () => {
     setLoading(true);
     toast({
-        title: "Redirecting to Billing Portal...",
-        description: "Please wait while we prepare your secure session.",
+      title: 'Redirecting to Billing Portal...',
+      description: 'Please wait while we prepare your secure session.',
     });
 
-    const { data, error } = await supabase.functions.invoke('create-portal-link');
+    try {
+      const { data, error } = await supabase.functions.invoke('create-portal-link');
 
-    if (error) {
-        toast({
-            title: 'Error',
-            description: 'Could not create billing portal session. Please try again.',
-            variant: 'destructive',
-        });
-        setLoading(false);
-        return;
+      if (error || !data?.url) {
+        throw new Error(error?.message || 'Could not create billing portal session.');
+      }
+
+      window.location.href = data.url;
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: err.message || 'Could not create billing portal session. Please try again.',
+        variant: 'destructive',
+      });
+      setLoading(false);
     }
-    
-    window.location.href = data.url;
   };
   
   return (
