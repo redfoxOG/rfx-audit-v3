@@ -1,8 +1,15 @@
 version: '3.8'
+
 services:
-  web:
+  frontend:
+    container_name: rfx-audit-v3
     build: .
-    environment:
-      - PORT=${PORT:-4173}
+    restart: always
     ports:
-      - "${APP_PORT:-4173}:${PORT:-4173}"
+      - "3002:80"  # External port → internal nginx static server
+    networks:
+      - core-services_stack_proxy-tier
+
+networks:
+  core-services_stack_proxy-tier:
+    external: true
